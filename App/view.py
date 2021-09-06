@@ -65,8 +65,8 @@ while True:
         print("Cargando información de los archivos ....")
         catalog = initCatalog()
         loadData(catalog)
-        print('Artistas cargados: ' + str(lt.size(catalog['Display_Name'])))
-        print('Obras cargadas: ' + str(lt.size(catalog['Constituent_ID'])))
+        print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
+        print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
     elif int(inputs[0]) == 2:
         pass
 
