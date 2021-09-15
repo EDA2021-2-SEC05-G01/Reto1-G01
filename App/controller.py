@@ -30,11 +30,11 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
-def initCatalog():
+def initCatalog(opcion):
     """
     Llama la funcion de inicializacion del catalogo del modelo.
     """
-    catalog = model.newCatalog()
+    catalog = model.newCatalog(opcion)
     return catalog
 
 # Funciones para la carga de datos
@@ -53,7 +53,7 @@ def loadArtworks(catalog):
     cada uno de ellos, se crea en la lista de autores, a dicho autor y una
     referencia al libro que se esta procesando.
     """
-    Artfile = cf.data_dir + 'Artworks-utf8-small.csv'
+    Artfile = cf.data_dir + 'Artworks-utf8-large.csv'
     input_file = csv.DictReader(open(Artfile, encoding='utf-8'))
     for artista in input_file:
         model.addartwork(catalog, artista)
@@ -65,7 +65,7 @@ def loadArtists(catalog):
     cada uno de ellos, se crea en la lista de autores, a dicho autor y una
     referencia al libro que se esta procesando.
     """
-    Artistsfile = cf.data_dir + 'Artists-utf8-small.csv'
+    Artistsfile = cf.data_dir + 'Artists-utf8-large.csv'
     input_file = csv.DictReader(open(Artistsfile, encoding='utf-8'))
     for artista in input_file:
         model.addartist(catalog, artista)
@@ -78,7 +78,35 @@ def sortBeginDate(catalog):
     """
     Ordena los libros por average_rating
     """
-    model.sortBooks(catalog)
+    model.sortartist(catalog)
+
+def sortDates(catalog, size, typesort):
+    """
+    Ordena los libros por average_rating
+    """
+    return model.sortDates(catalog, size, typesort)
 
 
 # Funciones de consulta sobre el catálogo
+
+def getartistcron(catalog, inc, fin):
+    """
+    Retorna los mejores libros
+    """
+    artists = model.getartistcron(catalog, inc, fin)
+    return artists
+
+
+def getartworkcron(catalog, finc, ffin):
+    """
+    Retorna los mejores libros
+    """
+    artists = model.getartworkcron(catalog, finc, ffin)
+    return artists
+
+def getartistID(catalog, nw):
+    """
+    Retorna los mejores libros
+    """
+    artists = model.getartistID(catalog, nw)
+    return artists
