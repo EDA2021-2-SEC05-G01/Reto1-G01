@@ -156,7 +156,6 @@ def sortfechas(catalog):
     sa.sort(catalog, cmpArtworkByDateAcquired)
 
 def sortDates(catalog, size, typesort):
-    # TODO completar modificaciones para el laboratorio 4
     if typesort == "1":
         typesort = ins
     elif typesort == "2":

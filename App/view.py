@@ -140,23 +140,12 @@ while True:
         artits = controller.getartistcron(catalog, inc, fin)
         print(printartcron(artits))
     elif int(inputs[0]) == 3:
-        size = input("Indique tamaño de la muestra: ")
-        print("Indique el tipo de algoritmo de ordenamiento a utilizar:")
-        print("1. Insertion")
-        print("2. Shell")
-        print("3. Merge")
-        print("4. Quick")
-        typesort = input("Su elección: ")
-        result = controller.sortDates(catalog, int(size), typesort)
-        print("Para la muestra de", size, " elementos, el tiempo (mseg) es: ",
-        str(result[0]))
-        printSortResults(result[1])
-        # finc = str(input("Ingrese la fecha incial de búsqueda (AAAA-MM-DD): "))
-        # ffin = str(input("Ingrese la fecha final de búsqueda (AAAA-MM-DD): "))
-        # finc = strptime(finc, "%Y-%m-%d")
-        # ffin = strptime(ffin, "%Y-%m-%d")
-        # artworks = controller.getartworkcron(catalog, finc, ffin)
-        # print(printartworkcron(artworks))
+        finc = str(input("Ingrese la fecha incial de búsqueda (AAAA-MM-DD): "))
+        ffin = str(input("Ingrese la fecha final de búsqueda (AAAA-MM-DD): "))
+        finc = strptime(finc, "%Y-%m-%d")
+        ffin = strptime(ffin, "%Y-%m-%d")
+        artworks = controller.getartworkcron(catalog, finc, ffin)
+        print(printartworkcron(artworks))
     elif int(inputs[0]) == 4:
         pass
     elif int(inputs[0]) == 5:
