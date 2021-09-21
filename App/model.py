@@ -153,7 +153,7 @@ def sortartist(catalog):
     sa.sort(catalog, compareBeginDate)
 
 def sortfechas(catalog):
-    sa.sort(catalog, cmpArtworkByDateAcquired)
+    mg.sort(catalog, cmpArtworkByDateAcquired)
 
 def sortDates(catalog, size, typesort):
     if typesort == "1":
