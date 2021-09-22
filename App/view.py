@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from os import name
 from time import strptime
 import config as cf
 import sys
@@ -100,20 +101,34 @@ def printartworkcron(artworks):
     #    artistas = controller.getartistID(catalog, nw)
        for art in lt.iterator(nw):
            print('Titulo: ' + art['Title'] + ',  Artistas : ' +
-                  art['ConstituentID'] + ', Fecha : ' + art['DateAcquired'] + ', Medio : ' + art['Medium']
+                  art["ConstituentID"] + ', Fecha : ' + art['DateAcquired'] + ', Medio : ' + art['Medium']
                   + ', Dimensiones: ' + art["Dimensions"])
     else:
        print('No se encontraron obras')
 
-def printSortResults(ord_books, sample=10):
-    size = lt.size(ord_books)
-    if size > sample:
-        print("Los primeros ", sample, " libros ordenados son:")
-    i=1
-    while i <= sample:
-        book = lt.getElement(ord_books,i)
-        print('Titulo: ' + book['Title'])
-        i+=1
+def printgetartistname(obras):
+   size = lt.size(obras)
+   nw = lt.newList()
+   if size:
+       print("Número total de obras del artista: " + str(size))
+       tecnicas = controller.tecnicasporautor(obras)
+       print("Número total de tecnicas del artista: " + str(lt.size(tecnicas)))
+       conteo = controller.contartecnicas(obras, tecnicas)
+       mayor = controller.mayor(conteo)
+       present = lt.isPresent(conteo, mayor)
+       mtec = lt.getElement(tecnicas, present)
+       print("La técnica más usada por el artista es: " + str(mtec))
+       i = 1
+       while i <= size:
+            x = lt.getElement(obras, i)
+            if x["Medium"] == mtec:
+                lt.addLast(nw, x)
+            i += 1
+       for art in lt.iterator(nw):
+            print('Título: ' + art['Title'] + ',  Fecha de la obra: ' +
+                art['Date'] + ', Medio: ' + art['Medium'] + ', Dimensiones: ' + art['Dimensions'])
+   else:
+       print('No se encontraron artistas')
 
 
 catalog = None
@@ -134,6 +149,9 @@ while True:
         loadData(catalog)
         print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
         print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
+        print('nombres cargados: ' + str(lt.size(catalog['names'])))
+        print('ids cargados: ' + str(lt.size(catalog['ids'])))
+        print(lt.getElement(catalog['ids'], 1))
     elif int(inputs[0]) == 2:
         inc = int(input("Ingrese el año inicial de búsqueda: "))
         fin = int(input("Ingrese el año final de búsqueda: "))
@@ -147,7 +165,9 @@ while True:
         artworks = controller.getartworkcron(catalog, finc, ffin)
         print(printartworkcron(artworks))
     elif int(inputs[0]) == 4:
-        pass
+        nombre = str(input("Ingrese el nombre del artista a consultar: "))
+        obras = controller.getartistname(catalog, nombre)
+        print(printgetartistname(obras))
     elif int(inputs[0]) == 5:
         pass
     elif int(inputs[0]) == 6:

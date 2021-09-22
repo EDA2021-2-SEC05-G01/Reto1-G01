@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
+from DISClib.ADT import list as lt
 import config as cf
 import model
 import csv
@@ -45,6 +45,8 @@ def loadData(catalog):
     """
     loadArtworks(catalog)
     loadArtists(catalog)
+    loadnames(catalog)
+    loadids(catalog)
 
 
 def loadArtworks(catalog):
@@ -69,6 +71,14 @@ def loadArtists(catalog):
     input_file = csv.DictReader(open(Artistsfile, encoding='utf-8'))
     for artista in input_file:
         model.addartist(catalog, artista)
+
+def loadnames(catalog):
+    for x in lt.iterator(catalog['artists']):
+        lt.addLast(catalog['names'], x['DisplayName'])
+
+def loadids(catalog):
+    for x in lt.iterator(catalog['artists']):
+        lt.addLast(catalog['ids'], x['ConstituentID'])
 
 
 
@@ -104,9 +114,21 @@ def getartworkcron(catalog, finc, ffin):
     artists = model.getartworkcron(catalog, finc, ffin)
     return artists
 
-def getartistID(catalog, nw):
+def getartistname(catalog, name):
     """
     Retorna los mejores libros
     """
-    artists = model.getartistID(catalog, nw)
+    artists = model.getartistname(catalog, name)
     return artists
+
+def tecnicasporautor(obras):
+    tecnicas = model.tecnicasporautor(obras)
+    return tecnicas
+
+def contartecnicas(obras, tecnicas):
+    conteo = model.contartecnicas(obras, tecnicas)
+    return conteo
+
+def mayor(lista):
+    mayor = model.mayor(lista)
+    return mayor

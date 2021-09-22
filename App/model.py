@@ -25,6 +25,7 @@
  """
 
 
+from DISClib.ADT.indexminpq import size
 from os import curdir
 from time import strptime
 from time import process_time
@@ -51,7 +52,9 @@ def newCatalog(opcion):
     generos y libros. Retorna el catalogo inicializado.
     """
     catalog = {'artworks': None,
-               'artists': None
+               'artists': None,
+               'names': None,
+               'ids': None
                }
     if opcion == "1":
         opcion = "ARRAY_LIST"
@@ -59,6 +62,8 @@ def newCatalog(opcion):
         opcion = "LINKED_LIST"
     catalog['artworks'] = lt.newList(opcion)
     catalog['artists'] = lt.newList(opcion)
+    catalog['names'] = lt.newList()
+    catalog['ids'] = lt.newList()
     return catalog
 
 
@@ -67,8 +72,6 @@ def newCatalog(opcion):
 def addartwork(catalog, artworks):
     # Se adiciona el artwork a la lista de artworks
     lt.addLast(catalog['artworks'], artworks)
-    # Se obtienen los ids del artwork
-    ids = artworks['ConstituentID'].split(",")
 
 
 def addartist(catalog, artists):
@@ -77,7 +80,6 @@ def addartist(catalog, artists):
     a los libros de dicho autor
     """
     lt.addLast(catalog['artists'], artists)
-    ids = artists['ConstituentID'].split(",")
 
 
 # Funciones para creacion de datos
@@ -122,15 +124,18 @@ def getartworkcron(catalog, finc, ffin):
         if fecha != '':
             fecha = strptime(fecha, "%Y-%m-%d")
             if fecha >= finc and fecha <= ffin:
+                id = x["ConstituentID"]
+                pos = id.strip('[]')
+                h = lt.isPresent(catalog["ids"], pos)
+                x["ConstituentID"] = lt.getElement(catalog["names"], h)
                 lt.addLast(cron, x)
     sortfechas(cron)
     return cron
 
-# def getartistID(catalog, nw):
-#     for x in lt.iterator(nw):
-
-#     return None
-
+def getartistname(catalog, name):
+    obras = obrasporautor(catalog, name)
+    return obras
+    #aquí voy, sólo he sacado las obras del autor
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -171,3 +176,48 @@ def sortDates(catalog, size, typesort):
     stop_time = process_time()
     elapsed_time_mseg = (stop_time - start_time)*1000
     return elapsed_time_mseg, sorted_list
+
+def obrasporautor(catalog, name):
+    obras = lt.newList()
+    posicion = lt.isPresent(catalog["names"], name)
+    id = lt.getElement(catalog["ids"], posicion)
+    for x in lt.iterator(catalog["artworks"]):
+        if id == (x["ConstituentID"]).strip("[]"):
+            lt.addLast(obras, x)
+    return obras
+
+def tecnicasporautor(obras):
+    tecnicas = lt.newList()
+    j = 1
+    while j < size(obras):
+        x = lt.getElement(obras, j)
+        j += 1
+        tecnica = x["Medium"]
+        if lt.isPresent(tecnicas, tecnica) == 0:
+            lt.addLast(tecnicas, tecnica)
+    return tecnicas
+
+def contartecnicas(obras, tecnicas):
+    i = 1
+    conteos = lt.newList()
+    while i <= size(tecnicas):
+        j = 1
+        conteo = 0
+        while j <= size(obras):
+            medium = lt.getElement(obras, j)
+            if lt.getElement(tecnicas, i) == medium["Medium"]:
+                conteo += 1
+            j += 1
+        lt.addLast(conteos, conteo)
+        i += 1
+    return conteos
+
+
+def mayor(lista):
+    mayor = 0
+    i = 1
+    while i <= size(lista):
+        if lt.getElement(lista, i) > mayor:
+            mayor = lt.getElement(lista, i)
+        i += 1
+    return mayor
