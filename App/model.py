@@ -153,7 +153,7 @@ def compareDate(art1, art2):
         return float(art1['Date']) < float(art2['Date'])
 
 def compareprecios(art1, art2):
-    return float(art1['precios']) < float(art2['precios'])
+    return float(art1['precios']) > float(art2['precios'])
 
 
 # Funciones de ordenamiento
@@ -167,7 +167,7 @@ def sortdates(obras):
     return x
 
 def sortartist(catalog):
-    sa.sort(catalog, compareBeginDate)
+    mg.sort(catalog, compareBeginDate)
 
 def sortfechas(catalog):
     mg.sort(catalog, cmpArtworkByDateAcquired)

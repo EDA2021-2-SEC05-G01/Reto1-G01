@@ -159,12 +159,13 @@ def printgetcosbydepartment(catalog, obras):
            pos = id.strip('[]')
            h = lt.isPresent(catalog["ids"], pos)
            x["ConstituentID"] = lt.getElement(catalog["names"], h)
-       print("Las 5 obras más antiguas a transportar son: ")
+       print("/Las 5 obras más antiguas a transportar son: ")
        for art in lt.iterator(nw):
             print('Título: ' + str(art['Title']) + ',  Artista(s): ' +
                 art['ConstituentID'] + ', Clasificación: ' + art['Classification'] + ', Fecha de la obra: ' + art['Date'] +
                 ', Medio: ' + art["Medium"] + ', Dimensiones: ' + art["Dimensions"] + ', Costo de transporte: ' + str(art["precios"]))
-       obras = controller.sorprecio
+       obras = controller.sorprecio(obras)
+       i = 1
        while i <= 5:
             x = lt.getElement(obras, i)
             lt.addLast(nc, x)
@@ -173,7 +174,7 @@ def printgetcosbydepartment(catalog, obras):
        for art in lt.iterator(nc):
             print('Título: ' + str(art['Title']) + ',  Artista(s): ' +
                 art['ConstituentID'] + ', Clasificación: ' + art['Classification'] + ', Fecha de la obra: ' + art['Date'] +
-                ', Medio: ' + art["Medium"] + ', Dimensiones: ' + art["Dimensions"] + ', Costo de transporte: ' + str(art["precios"]))
+                ', Medio: ' + art["Medium"] + ', Dimensiones: ' + art["Dimensions"] + ', Costo de transporte: ' + str(round(art["precios"], 3)))
 
     else:
         print('No se encontraron obras')
