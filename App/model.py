@@ -54,7 +54,9 @@ def newCatalog(opcion):
     catalog = {'artworks': None,
                'artists': None,
                'names': None,
-               'ids': None
+               'ids': None,
+               'departamentos': None,
+               'objectid': None
                }
     if opcion == "1":
         opcion = "ARRAY_LIST"
@@ -64,6 +66,8 @@ def newCatalog(opcion):
     catalog['artists'] = lt.newList(opcion)
     catalog['names'] = lt.newList()
     catalog['ids'] = lt.newList()
+    catalog['departamentos'] = lt.newList()
+    catalog['objectid'] = lt.newList()
     return catalog
 
 
@@ -80,16 +84,6 @@ def addartist(catalog, artists):
     a los libros de dicho autor
     """
     lt.addLast(catalog['artists'], artists)
-
-
-# Funciones para creacion de datos
-
-
-def newIDS(id):
-    """
-    Crea una nueva estructura para modelar los libros de
-    un autor y su promedio de ratings
-    """
 
 
 
@@ -135,7 +129,10 @@ def getartworkcron(catalog, finc, ffin):
 def getartistname(catalog, name):
     obras = obrasporautor(catalog, name)
     return obras
-    #aquí voy, sólo he sacado las obras del autor
+
+def getcosbydepartment(catalog, departamento):
+    obras = obraspordepartamento(catalog, departamento)
+    return obras
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -151,8 +148,23 @@ def cmpArtworkByDateAcquired(finc, ffin):
 def compareBeginDate(art1, art2):
     return float(art1['BeginDate']) < float(art2['BeginDate'])
 
+def compareDate(art1, art2):
+    if art1['Date'] != '' and art2['Date'] != '':
+        return float(art1['Date']) < float(art2['Date'])
+
+def compareprecios(art1, art2):
+    return float(art1['precios']) < float(art2['precios'])
+
 
 # Funciones de ordenamiento
+
+def sorprecio(obras):
+    x = mg.sort(obras, compareprecios)
+    return x
+
+def sortdates(obras):
+    x = mg.sort(obras,compareDate)
+    return x
 
 def sortartist(catalog):
     sa.sort(catalog, compareBeginDate)
@@ -221,3 +233,107 @@ def mayor(lista):
             mayor = lt.getElement(lista, i)
         i += 1
     return mayor
+
+def obraspordepartamento(catalog, departamento):
+    obras = lt.newList()
+    i = 1
+    artworks = catalog["artworks"]
+    while i <= size(artworks):
+        obra = lt.getElement(artworks, i)
+        dep = obra["Department"]
+        if dep == (departamento):
+            lt.addLast(obras, obra)
+        i += 1
+    return obras
+
+
+# FUNCIONES DE CÁLCULOS Y OPERACIONES
+
+def areadeunaobra(obras):
+    areas = lt.newList()
+    i = 1
+    while i <= size(obras):
+        obra = lt.getElement(obras, i)
+        if obra["Diameter (cm)"] != '':
+            area = areacirculo(obra["Diameter (cm)"])
+        elif obra["Depth (cm)"] != '' and obra["Depth (cm)"] != "0":
+            area = areacubo(obra["Width (cm)"], obra["Height (cm)"], obra["Depth (cm)"])
+        elif obra["Width (cm)"] != '' and obra["Width (cm)"] != "0" and obra["Height (cm)"] != '' and obra["Height (cm)"] != "0":
+            area = areacuadrado(obra["Width (cm)"], obra["Height (cm)"])
+        else:
+            area = 0
+        area = (area)
+        lt.addLast(areas, area)
+        i += 1
+    return areas
+
+
+def areacirculo(diametro):
+    diam = cmam(diametro)
+    area = (3.1416)*((float(diam)/2)**2)
+    return area
+
+def areacuadrado(ancho, alto):
+    anc = cmam(ancho)
+    alt = cmam(alto)
+    area = float(anc)*float(alt)
+    return area
+
+def areacubo(ancho, alto, profundidad):
+    anc = cmam(ancho)
+    alt = cmam(alto)
+    pro = cmam(profundidad)
+    area = float(anc)*float(alt)*float(pro)
+    return area
+
+def precioobras(areas, obras):
+    costos = lt.newList()
+    costo = 0
+    i = 1
+    while i <= size(obras):
+        obra = lt.getElement(obras, i)
+        area = lt.getElement(areas, i)
+        if obra["Weight (kg)"] != '':
+            costo = float(area) + float(obra["Weight (kg)"])
+        else:
+            costo = float(area)
+        if float(area) == 0:
+            costo = 48
+        else:
+            costo = 72*costo
+        lt.addLast(costos, costo)
+        i += 1
+    return costos
+
+def preciototal(costos):
+    costototal = 0
+    i = 1
+    while i <= size(costos):
+        costo = lt.getElement(costos, i)
+        costototal += float(costo)
+        i += 1
+    return costototal
+
+def cmam(numero):
+    numero = float(numero)
+    m = numero/100
+    return m
+
+def pesototal(obras):
+    i = 1
+    peso = 0
+    while i <= size(obras):
+        obra = lt.getElement(obras, i)
+        if obra["Weight (kg)"] != '':
+            peso += float(obra["Weight (kg)"])
+        i += 1
+    return peso
+
+def anadirprecio(obras, precios):
+    i = 1
+    while i <= size(obras):
+        x = lt.getElement(obras, i)
+        p = lt.getElement(precios, i)
+        x["precios"] = p
+        i += 1
+    return obras

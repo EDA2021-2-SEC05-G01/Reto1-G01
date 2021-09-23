@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+#from DISClib.DataStructures.arraylist import getElement
 from os import name
 from time import strptime
 import config as cf
@@ -80,6 +81,7 @@ def printartcron(artists):
    else:
        print('No se encontraron artistas')
 
+
 def printartworkcron(artworks):
     size = lt.size(artworks)
     if size:
@@ -106,6 +108,7 @@ def printartworkcron(artworks):
     else:
        print('No se encontraron obras')
 
+
 def printgetartistname(obras):
    size = lt.size(obras)
    nw = lt.newList()
@@ -131,6 +134,53 @@ def printgetartistname(obras):
        print('No se encontraron artistas')
 
 
+def printgetcosbydepartment(catalog, obras):
+    size = lt.size(obras)
+    nw = lt.newList()
+    nc = lt.newList()
+    if size:
+       print("Número total de obras a tranportar: " + str(size))
+       areas = controller.areadeunaobra(obras)
+       costos = controller.precioobras(areas, obras)
+       obras = controller.anadirprecio(obras, costos)
+       costototal = round(controller.preciototal(costos), 3)
+       peso = controller.pesototal(obras)
+       print("El peso total de las obras (kg) de la carga es: " + str(peso))
+       print("El precio estimado (USD) de la carga es: " + str(costototal))
+       orden = controller.sortdates(obras)
+       i = 1
+       while i <= 5:
+            x = lt.getElement(orden, i)
+            lt.addLast(nw, x)
+            i += 1
+       for num in range(1, lt.size(nw)):
+           x = lt.getElement(nw, num)
+           id = x["ConstituentID"]
+           pos = id.strip('[]')
+           h = lt.isPresent(catalog["ids"], pos)
+           x["ConstituentID"] = lt.getElement(catalog["names"], h)
+       print("Las 5 obras más antiguas a transportar son: ")
+       for art in lt.iterator(nw):
+            print('Título: ' + str(art['Title']) + ',  Artista(s): ' +
+                art['ConstituentID'] + ', Clasificación: ' + art['Classification'] + ', Fecha de la obra: ' + art['Date'] +
+                ', Medio: ' + art["Medium"] + ', Dimensiones: ' + art["Dimensions"] + ', Costo de transporte: ' + str(art["precios"]))
+       obras = controller.sorprecio
+       while i <= 5:
+            x = lt.getElement(obras, i)
+            lt.addLast(nc, x)
+            i += 1
+       print("Las 5 obras más costosas de transportar: ")
+       for art in lt.iterator(nc):
+            print('Título: ' + str(art['Title']) + ',  Artista(s): ' +
+                art['ConstituentID'] + ', Clasificación: ' + art['Classification'] + ', Fecha de la obra: ' + art['Date'] +
+                ', Medio: ' + art["Medium"] + ', Dimensiones: ' + art["Dimensions"] + ', Costo de transporte: ' + str(art["precios"]))
+
+    else:
+        print('No se encontraron obras')
+
+
+
+
 catalog = None
 
 """
@@ -151,29 +201,30 @@ while True:
         print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
         print('nombres cargados: ' + str(lt.size(catalog['names'])))
         print('ids cargados: ' + str(lt.size(catalog['ids'])))
-        print(lt.getElement(catalog['ids'], 1))
+        print("Departamentos cargados: " + str(lt.size(catalog['departamentos'])))
+        print("IDS de objectos cargados: " + str(lt.size(catalog['objectid'])))
     elif int(inputs[0]) == 2:
         inc = int(input("Ingrese el año inicial de búsqueda: "))
         fin = int(input("Ingrese el año final de búsqueda: "))
         artits = controller.getartistcron(catalog, inc, fin)
-        print(printartcron(artits))
+        printartcron(artits)
     elif int(inputs[0]) == 3:
         finc = str(input("Ingrese la fecha incial de búsqueda (AAAA-MM-DD): "))
         ffin = str(input("Ingrese la fecha final de búsqueda (AAAA-MM-DD): "))
         finc = strptime(finc, "%Y-%m-%d")
         ffin = strptime(ffin, "%Y-%m-%d")
         artworks = controller.getartworkcron(catalog, finc, ffin)
-        print(printartworkcron(artworks))
+        printartworkcron(artworks)
     elif int(inputs[0]) == 4:
         nombre = str(input("Ingrese el nombre del artista a consultar: "))
         obras = controller.getartistname(catalog, nombre)
-        print(printgetartistname(obras))
+        printgetartistname(obras)
     elif int(inputs[0]) == 5:
         pass
     elif int(inputs[0]) == 6:
-        pass
-    elif int(inputs[0]) == 7:
-        pass
+        departamento = str(input("Ingrese el departamento a consultar: "))
+        obras = controller.getcosbydepartment(catalog, departamento)
+        printgetcosbydepartment(catalog, obras)
     else:
         sys.exit(0)
 sys.exit(0)

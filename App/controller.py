@@ -47,6 +47,8 @@ def loadData(catalog):
     loadArtists(catalog)
     loadnames(catalog)
     loadids(catalog)
+    loaddep(catalog)
+    loadobj(catalog)
 
 
 def loadArtworks(catalog):
@@ -79,6 +81,14 @@ def loadnames(catalog):
 def loadids(catalog):
     for x in lt.iterator(catalog['artists']):
         lt.addLast(catalog['ids'], x['ConstituentID'])
+
+def loaddep(catalog):
+    for x in lt.iterator(catalog['artworks']):
+        lt.addLast(catalog['departamentos'], x['Department'])
+
+def loadobj(catalog):
+    for x in lt.iterator(catalog['artworks']):
+        lt.addLast(catalog['objectid'], x['ObjectID'])
 
 
 
@@ -132,3 +142,35 @@ def contartecnicas(obras, tecnicas):
 def mayor(lista):
     mayor = model.mayor(lista)
     return mayor
+
+def getcosbydepartment(catalog, departamento):
+    costo = model.getcosbydepartment(catalog, departamento)
+    return costo
+
+def areadeunaobra(obras):
+    areas = model.areadeunaobra(obras)
+    return areas
+
+def precioobras(areas, obras):
+    costos = model.precioobras(areas, obras)
+    return costos
+
+def preciototal(costos):
+    preciototal = model.preciototal(costos)
+    return preciototal
+
+def pesototal(obras):
+    peso = model.pesototal(obras)
+    return peso
+
+def sortdates(obras):
+    ob = model.sortdates(obras)
+    return ob
+
+def anadirprecio(obras, precios):
+    ob = model.anadirprecio(obras, precios)
+    return ob
+
+def sorprecio(obras):
+    ob = model.sorprecio(obras)
+    return ob
