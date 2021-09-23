@@ -159,18 +159,34 @@ def compareprecios(art1, art2):
 # Funciones de ordenamiento
 
 def sorprecio(obras):
+    start_time = process_time()
     x = mg.sort(obras, compareprecios)
+    stop_time = process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print("timepo: " + str(elapsed_time_mseg))
     return x
 
 def sortdates(obras):
+    start_time = process_time()
     x = mg.sort(obras,compareDate)
+    stop_time = process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print("timepo: " + str(elapsed_time_mseg))
     return x
 
 def sortartist(catalog):
+    start_time = process_time()
     mg.sort(catalog, compareBeginDate)
+    stop_time = process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print("timepo: " + str(elapsed_time_mseg))
 
 def sortfechas(catalog):
+    start_time = process_time()
     mg.sort(catalog, cmpArtworkByDateAcquired)
+    stop_time = process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print("timepo: " + str(elapsed_time_mseg))
 
 def sortDates(catalog, size, typesort):
     if typesort == "1":
@@ -256,7 +272,7 @@ def areadeunaobra(obras):
         obra = lt.getElement(obras, i)
         if obra["Diameter (cm)"] != '':
             area = areacirculo(obra["Diameter (cm)"])
-        elif obra["Depth (cm)"] != '' and obra["Depth (cm)"] != "0":
+        elif obra["Depth (cm)"] != '' and obra["Depth (cm)"] != "0" and obra["Width (cm)"] != '' and obra["Width (cm)"] != "0" and obra["Height (cm)"] != '' and obra["Height (cm)"] != "0":
             area = areacubo(obra["Width (cm)"], obra["Height (cm)"], obra["Depth (cm)"])
         elif obra["Width (cm)"] != '' and obra["Width (cm)"] != "0" and obra["Height (cm)"] != '' and obra["Height (cm)"] != "0":
             area = areacuadrado(obra["Width (cm)"], obra["Height (cm)"])
